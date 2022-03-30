@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+const mongooseDelete = require('mongoose-delete')
+
 
 const StorageSceheme = new mongoose.Schema(
     {
@@ -15,4 +17,5 @@ const StorageSceheme = new mongoose.Schema(
     }
 );
 
+TracksScheme.plugin(mongooseDelete,{overrideMethods:"all"})
 module.exports = mongoose.model("storage",StorageSceheme)

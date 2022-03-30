@@ -1,4 +1,6 @@
 const  {storageModel} = require('../models')
+
+
 const PUBLIC_URL = process.env.PUBLIC_URL
 
 /**
@@ -7,6 +9,7 @@ const PUBLIC_URL = process.env.PUBLIC_URL
 * @param{*}res
 */
 const getItems = async (req,res)=>{
+     console.log()
      const data = await storageModel.find({})
      res.send({data})
 }
@@ -26,7 +29,7 @@ const getItem = (req,res)=>{
 * @param{*}req
 * @param{*}res
 */
-const createItem = async (req,res)=>{    
+const createItem = async (req,res)=>{   
      
      const {body, file} = req
      const filename = file.filename

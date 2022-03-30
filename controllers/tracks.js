@@ -26,6 +26,7 @@ const getItem = async(req,res)=>{
           req = matchedData(req)
           const {id} = req
           const data = await tracksModel.findById(id)
+          console.log(data)
           if(data != null){
              res.send({data})
           }else{
@@ -77,7 +78,7 @@ const deleteItem = async (req,res)=>{
      try {
           req = matchedData(req)
           const {id} = req
-          const data = await tracksModel.deleteOne({_id:id})
+          const data = await tracksModel.delete({_id:id})
           res.send({data})          
      } catch (error) {
           console.log(error)
