@@ -21,10 +21,20 @@ const getItems = async (req,res)=>{
 * @param{*}req
 * @param{*}res
 */
-const getItem = (req,res)=>{
-      
+const getItem = async(req,res)=>{
+     try {
+          req = matchedData(req)
+          const {id} = req
+          const data = await tracksModel.findById(id)
+          if(data != null){
+             res.send({data})
+          }else{
+               handleHtttpError(res,"Elemento no encotrado",204)
+          }
+     } catch (error) {
+          handleHtttpError(res,'ERROR_GET_ITEMS')
+     }     
 }
-
 
 /**
 * Crear elemento
@@ -37,19 +47,25 @@ const createItem = async (req,res)=>{
           const data = await tracksModel.create(body) 
           res.send({data})          
      } catch (error) {
-          console.log(error)
           handleHtttpError(res,'ERROR_CREATE_ITEM',403)
      }
 }
-
 
 /**
 * Modificar elemento
 * @param{*}req
 * @param{*}res
 */
-const updateItem = (req,res)=>{    
-    
+const updateItem = async(req,res)=>{       
+     try {
+          const {id, ...body} = matchedData(req)
+          const data = await tracksModel.findOneAndUpdate(
+               id,body
+          ) 
+          res.send({data})          
+     } catch (error) {
+          handleHtttpError(res,'ERROR_UPDATE_ITEM',403)
+     }
 }
 
 /**
@@ -57,8 +73,16 @@ const updateItem = (req,res)=>{
 * @param{*}req
 * @param{*}res
 */
-const deleteItem = (req,res)=>{     
-    
+const deleteItem = async (req,res)=>{     
+     try {
+          req = matchedData(req)
+          const {id} = req
+          const data = await tracksModel.deleteOne({_id:id})
+          res.send({data})          
+     } catch (error) {
+          console.log(error)
+          handleHtttpError(res,'ERROR_DELETE_ITEMS')
+     }    
 }
 
 

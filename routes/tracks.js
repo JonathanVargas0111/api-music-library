@@ -3,10 +3,13 @@ const router = express.Router()
 const customHeader = require("../middleware/customHeader")
 
 const {validatorCreateItem,validatorGetItem,validatorUpdateItem} = require('../validators/tracks')
-const {getItems,createItem} = require('../controllers/tracks')
+const {getItems,getItem,createItem,updateItem,deleteItem} = require('../controllers/tracks')
 
 router.get('/',getItems)
 router.post("/",validatorCreateItem,createItem)
+router.get('/:id', validatorGetItem,getItem)
+router.put('/:id', validatorGetItem,validatorCreateItem,updateItem)
+router.delete('/:id', validatorGetItem,deleteItem)
 
 module.exports = router
 
