@@ -17,5 +17,5 @@ const StorageSceheme = new mongoose.Schema(
     }
 );
 
-TracksScheme.plugin(mongooseDelete,{overrideMethods:"all"})
+StorageSceheme.plugin(mongooseDelete,{overrideMethods:"all"})
 module.exports = mongoose.model("storage",StorageSceheme)

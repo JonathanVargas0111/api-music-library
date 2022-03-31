@@ -1,7 +1,10 @@
+const fs = require("fs");
+const { matchedData } = require("express-validator")
 const  {storageModel} = require('../models')
-
+const { handleHttpError } = require('../utils/handleError')
 
 const PUBLIC_URL = process.env.PUBLIC_URL
+const MEDIA_PATH = `${__dirname}/../storage`
 
 /**
 * Obtener lista de elementos
@@ -9,9 +12,12 @@ const PUBLIC_URL = process.env.PUBLIC_URL
 * @param{*}res
 */
 const getItems = async (req,res)=>{
-     console.log()
-     const data = await storageModel.find({})
-     res.send({data})
+     try {
+          const data = await storageModel.find({})
+          res.send({data})
+     } catch (error) {
+          handleHttpError(res, "ERROR_LIST_ITEMS")
+     }
 }
 
 /**
@@ -19,8 +25,14 @@ const getItems = async (req,res)=>{
 * @param{*}req
 * @param{*}res
 */
-const getItem = (req,res)=>{
-      
+const getItem = async (req,res)=>{     
+     try {
+          const {id} = matchedData(req)
+          const data = await storageModel.findById(id)
+          res.send({data})
+     } catch (error) {
+          handleHttpError(res, "ERROR_DETAIL_ITEM")
+     } 
 }
 
 
@@ -31,6 +43,7 @@ const getItem = (req,res)=>{
 */
 const createItem = async (req,res)=>{   
      
+   try {
      const {body, file} = req
      const filename = file.filename
      const fileData = {
@@ -39,6 +52,9 @@ const createItem = async (req,res)=>{
      }
      const data = await storageModel.create(fileData)
      res.send(data)  
+   } catch (error) {        
+     handleHttpError(res, "ERROR_DETAIL_ITEM")
+   }
 }
 
 
@@ -56,9 +72,25 @@ const updateItem = (req,res)=>{
 * @param{*}req
 * @param{*}res
 */
-const deleteItem = (req,res)=>{     
-    
+const deleteItem =async (req,res)=>{     
+     try {
+          const { id } = matchedData(req);
+          const dataFile = await storageModel.findById(id);
+          await storageModel.delete({ _id: id });
+          //const deleteResponse = await storageModel.deleteOne({ _id: id });
+          const { filename } = dataFile;
+          const filePath = `${MEDIA_PATH}/${filename}`; //TODO c:/miproyecto/file-1232.png      
+          //fs.unlinkSync(filePath);
+          const data = {
+            filePath,
+            deleted: 1
+          };
+      
+          res.send({ data });
+        } catch (error) {
+          handleHttpError(res, "ERROR_DELETE_ITEM");
+        }
 }
 
 
-module.exports = { getItems, getItem, createItem, updateItem, deleteItem };
+module.exports = { getItems, getItem, createItem, deleteItem };

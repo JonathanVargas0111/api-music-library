@@ -28,5 +28,5 @@ const UserScheme = new mongoose.Schema(
     }
 );
 
-TracksScheme.plugin(mongooseDelete,{overrideMethods:"all"})
+UserScheme.plugin(mongooseDelete,{overrideMethods:"all"})
 module.exports = mongoose.model("users",UserScheme)

@@ -1,6 +1,6 @@
 const { matchedData } = require('express-validator')
 const  {tracksModel} = require('../models')
-const { handleHtttpError } = require('../utils/handleError')
+const { handleHttpError } = require('../utils/handleError')
 
 /**
 * Obtener lista de elementos
@@ -12,7 +12,7 @@ const getItems = async (req,res)=>{
           const data = await tracksModel.find({})
           res.send({data})          
      } catch (error) {
-          handleHtttpError(res,'ERROR_GET_ITEMS')
+          handleHttpError(res,'ERROR_GET_ITEMS')
      }     
 }
 
@@ -30,10 +30,10 @@ const getItem = async(req,res)=>{
           if(data != null){
              res.send({data})
           }else{
-               handleHtttpError(res,"Elemento no encotrado",204)
+               handleHttpError(res,"Elemento no encotrado",204)
           }
      } catch (error) {
-          handleHtttpError(res,'ERROR_GET_ITEMS')
+          handleHttpError(res,'ERROR_GET_ITEMS')
      }     
 }
 
@@ -48,7 +48,7 @@ const createItem = async (req,res)=>{
           const data = await tracksModel.create(body) 
           res.send({data})          
      } catch (error) {
-          handleHtttpError(res,'ERROR_CREATE_ITEM',403)
+          handleHttpError(res,'ERROR_CREATE_ITEM',403)
      }
 }
 
@@ -65,25 +65,28 @@ const updateItem = async(req,res)=>{
           ) 
           res.send({data})          
      } catch (error) {
-          handleHtttpError(res,'ERROR_UPDATE_ITEM',403)
+          handleHttpError(res,'ERROR_UPDATE_ITEM',403)
      }
 }
 
 /**
-* Eliminar elemento
-* @param{*}req
-* @param{*}res
-*/
+ * Eliminar un registro
+ * @param {*} req
+ * @param {*} res
+ */
 const deleteItem = async (req,res)=>{     
-     try {
-          req = matchedData(req)
-          const {id} = req
-          const data = await tracksModel.delete({_id:id})
-          res.send({data})          
-     } catch (error) {
+     try{
+          req = matchedData(req);
+          const {id} = req;
+          const deleteResponse = await tracksModel.delete({_id:id});
+          const data = {
+            deleted: deleteResponse.matchedCount
+          }          
+          res.send({data});
+        }catch(error){
           console.log(error)
-          handleHtttpError(res,'ERROR_DELETE_ITEMS')
-     }    
+          handleHttpError(res,"ERROR_DELETE_ITEM")
+        }
 }
 
 
